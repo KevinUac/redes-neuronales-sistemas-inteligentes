@@ -1,0 +1,74 @@
+
+========================================================================
+1. CARGA Y PREPROCESAMIENTO DE LA SERIE
+========================================================================
+Registros horarios: 43824 (2010-01-01 a 2014-12-31)
+PM2.5 faltante: 2067 horas (4.7%); se interpola SOLO como entrada,
+                 nunca se evalua ni se entrena contra valores interpolados.
+Vector de entrada: 24 h x 5 variables + 10 fijas = 130 entradas
+
+Particion cronologica (horizonte 6 h): entrenamiento 28878 (2010-01-02 a 2013-07-23)
+                                   validacion    6188 (2013-07-24 a 2014-04-11)
+                                   prueba        6189 (2014-04-11 a 2014-12-31)
+
+========================================================================
+2. AJUSTE DE HIPERPARAMETROS (criterio: RMSE en validacion, ug/m3)
+========================================================================
+  forma=directa   capas=(32,)     alpha=0.1  mejor_epoca=35  RMSE_val=57.10
+  forma=directa   capas=(32,)     alpha=1.0  mejor_epoca=33  RMSE_val=57.45
+  forma=directa   capas=(32,)     alpha=3.0  mejor_epoca=23  RMSE_val=58.75
+  forma=directa   capas=(64,)     alpha=0.1  mejor_epoca=24  RMSE_val=57.53
+  forma=directa   capas=(64,)     alpha=1.0  mejor_epoca=22  RMSE_val=57.81
+  forma=directa   capas=(64,)     alpha=3.0  mejor_epoca=28  RMSE_val=59.20
+  forma=directa   capas=(64, 32)  alpha=0.1  mejor_epoca=5   RMSE_val=58.46
+  forma=directa   capas=(64, 32)  alpha=1.0  mejor_epoca=18  RMSE_val=57.80
+  forma=directa   capas=(64, 32)  alpha=3.0  mejor_epoca=50  RMSE_val=58.67
+  forma=residual  capas=(32,)     alpha=0.1  mejor_epoca=31  RMSE_val=56.81
+  forma=residual  capas=(32,)     alpha=1.0  mejor_epoca=23  RMSE_val=56.53
+  forma=residual  capas=(32,)     alpha=3.0  mejor_epoca=22  RMSE_val=57.07
+  forma=residual  capas=(64,)     alpha=0.1  mejor_epoca=13  RMSE_val=56.64
+  forma=residual  capas=(64,)     alpha=1.0  mejor_epoca=26  RMSE_val=56.68
+  forma=residual  capas=(64,)     alpha=3.0  mejor_epoca=36  RMSE_val=57.13
+  forma=residual  capas=(64, 32)  alpha=0.1  mejor_epoca=3   RMSE_val=58.40
+  forma=residual  capas=(64, 32)  alpha=1.0  mejor_epoca=10  RMSE_val=56.99
+  forma=residual  capas=(64, 32)  alpha=3.0  mejor_epoca=31  RMSE_val=57.21
+(18 configuraciones, 64 s)
+RMSE de validacion de referencia: persistencia = 68.58 | ARX lineal = 59.08
+>> Mejor configuracion: forma=residual, capas=(32,), alpha=1.0, lr=0.003
+
+========================================================================
+3. ENTRENAMIENTO FINAL (horizonte principal)
+========================================================================
+Arquitectura: 130 -> 32 -> 1 | parametros: 4225
+Epocas entrenadas: 35 | mejor epoca (validacion): 23
+
+========================================================================
+4. EVALUACION EN PRUEBA - PRONOSTICO A 6 HORAS
+========================================================================
+                       Modelo     R2    RMSE     MAE      R
+  Persistencia (PM2.5 actual) 0.5379 53.5972 34.6602 0.7690
+    Autorregresivo lineal ARX 0.6411 47.2324 32.8479 0.8033
+Red neuronal NARX (propuesta) 0.6769 44.8175 30.0650 0.8258
+
+Habilidad respecto a la persistencia (1 - RMSE/RMSE_pers): NARX = +16.4% | ARX = +11.9%
+Mejora de la red NARX sobre el ARX lineal: +5.1% en RMSE
+Error NARX: media = -5.27 ug/m3 | desviacion estandar = 44.51 ug/m3
+
+RMSE de prueba (ug/m3) por horizonte de pronostico (forma y alpha re-sintonizados en validacion):
+    h |    forma | alpha | Persistencia |     ARX |    NARX |  R2 NARX
+    1 | residual |   0.1 |        18.65 |   17.78 |   17.68 |   0.9500
+    3 | residual |   0.1 |        36.78 |   33.89 |   32.58 |   0.8297
+    6 | residual |   1.0 |        53.60 |   47.23 |   44.82 |   0.6769
+   12 | residual |   1.0 |        72.07 |   61.34 |   58.58 |   0.4441
+   24 |  directa |   1.0 |        86.53 |   72.30 |   73.86 |   0.1137
+
+Sistema de ALERTA (PM2.5 en t+6 h > 150 ug/m3) - clasificacion binaria:
+  Horas de prueba con alerta real: 940 de 6189 (15.2%)
+  Umbral de pronostico calibrado en validacion (max F1): NARX = 150.0 | persistencia = 122.5 ug/m3
+  Persistencia  exactitud=0.8636 precision=0.5343 sensibilidad=0.7947 F1=0.6390 AUC=0.9199
+  NARX          exactitud=0.9087 precision=0.7208 sensibilidad=0.6511 F1=0.6842 AUC=0.9414
+  Matriz de confusion NARX [VN=5012 FP=237 FN=328 VP=612]
+[figura] figuras/ej3_datos.png
+[figura] figuras/ej3_resultados.png
+
+[OK] Ejemplo 3 finalizado.

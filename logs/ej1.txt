@@ -1,0 +1,84 @@
+
+========================================================================
+1. CARGA Y PREPROCESAMIENTO DE DATOS
+========================================================================
+Registros: 7043 | Variables de entrada tras codificacion: 30
+Clase positiva (abandona): 26.5% | Clase negativa (permanece): 73.5%
+Entrenamiento: 4930 | Validacion: 1056 | Prueba: 1057
+
+========================================================================
+2. AJUSTE DE HIPERPARAMETROS (busqueda en rejilla, criterio: AUC en validacion)
+========================================================================
+  capas=(8,)       alpha=0.1    lr=0.001  epocas=43  AUC_val=0.8331
+  capas=(8,)       alpha=0.1    lr=0.005  epocas=57  AUC_val=0.8369
+  capas=(8,)       alpha=1.0    lr=0.001  epocas=66  AUC_val=0.8401
+  capas=(8,)       alpha=1.0    lr=0.005  epocas=46  AUC_val=0.8393
+  capas=(8,)       alpha=3.0    lr=0.001  epocas=66  AUC_val=0.8389
+  capas=(8,)       alpha=3.0    lr=0.005  epocas=34  AUC_val=0.8437
+  capas=(8,)       alpha=10.0   lr=0.001  epocas=58  AUC_val=0.8363
+  capas=(8,)       alpha=10.0   lr=0.005  epocas=20  AUC_val=0.8348
+  capas=(16,)      alpha=0.1    lr=0.001  epocas=43  AUC_val=0.8326
+  capas=(16,)      alpha=0.1    lr=0.005  epocas=19  AUC_val=0.8314
+  capas=(16,)      alpha=1.0    lr=0.001  epocas=42  AUC_val=0.8323
+  capas=(16,)      alpha=1.0    lr=0.005  epocas=18  AUC_val=0.8278
+  capas=(16,)      alpha=3.0    lr=0.001  epocas=33  AUC_val=0.8224
+  capas=(16,)      alpha=3.0    lr=0.005  epocas=31  AUC_val=0.8412
+  capas=(16,)      alpha=10.0   lr=0.001  epocas=34  AUC_val=0.8236
+  capas=(16,)      alpha=10.0   lr=0.005  epocas=28  AUC_val=0.8356
+  capas=(32,)      alpha=0.1    lr=0.001  epocas=24  AUC_val=0.8294
+  capas=(32,)      alpha=0.1    lr=0.005  epocas=27  AUC_val=0.8414
+  capas=(32,)      alpha=1.0    lr=0.001  epocas=25  AUC_val=0.8307
+  capas=(32,)      alpha=1.0    lr=0.005  epocas=45  AUC_val=0.8434
+  capas=(32,)      alpha=3.0    lr=0.001  epocas=30  AUC_val=0.8349
+  capas=(32,)      alpha=3.0    lr=0.005  epocas=27  AUC_val=0.8428
+  capas=(32,)      alpha=10.0   lr=0.001  epocas=67  AUC_val=0.8378
+  capas=(32,)      alpha=10.0   lr=0.005  epocas=26  AUC_val=0.8385
+  capas=(32, 16)   alpha=0.1    lr=0.001  epocas=36  AUC_val=0.8355
+  capas=(32, 16)   alpha=0.1    lr=0.005  epocas=30  AUC_val=0.8343
+  capas=(32, 16)   alpha=1.0    lr=0.001  epocas=28  AUC_val=0.8351
+  capas=(32, 16)   alpha=1.0    lr=0.005  epocas=21  AUC_val=0.8346
+  capas=(32, 16)   alpha=3.0    lr=0.001  epocas=24  AUC_val=0.8316
+  capas=(32, 16)   alpha=3.0    lr=0.005  epocas=27  AUC_val=0.8423
+  capas=(32, 16)   alpha=10.0   lr=0.001  epocas=31  AUC_val=0.8364
+  capas=(32, 16)   alpha=10.0   lr=0.005  epocas=30  AUC_val=0.8348
+
+>> Mejor configuracion: capas=(8,), alpha=3.0, lr=0.005  (AUC_val=0.8437)
+
+========================================================================
+3. ENTRENAMIENTO FINAL
+========================================================================
+Arquitectura: 30 -> 8 -> 1 (sigmoide)
+Epocas ejecutadas: 34 | Mejor puntaje de validacion interna: 0.8162
+Umbral de decision optimo (max F1 en validacion): 0.39
+
+========================================================================
+4. EVALUACION SOBRE EL CONJUNTO DE PRUEBA (datos nunca vistos)
+========================================================================
+                             Modelo  Exactitud  Precision  Sensibilidad     F1    AUC
+     Clase mayoritaria (referencia)     0.7342     0.0000        0.0000 0.0000 0.5000
+Regresion logistica (umbral propio)     0.7436     0.5117        0.7794 0.6178 0.8447
+       Red neuronal MLP (propuesta)     0.7928     0.5975        0.6762 0.6344 0.8426
+
+Matriz de confusion  [VN=648  FP=128  FN=91  VP=190]
+Especificidad: 0.8351 | Valor predictivo negativo: 0.8769
+AUC (red neuronal): 0.8426 | Precision promedio (AP): 0.6482
+
+Impacto economico ilustrativo (cliente = $600, oferta = $80, exito de retencion = 30%):
+  Campana guiada por la red neuronal : $    8,760
+  Campana a todos los clientes       : $  -33,980
+  Sin campana                        : $        0
+
+Top 10 variables mas influyentes (importancia por permutacion, caida de AUC):
+  tenure                                     0.0616
+  Contract_Two year                          0.0345
+  InternetService_Fiber optic                0.0113
+  Contract_One year                          0.0085
+  PaymentMethod_Electronic check             0.0063
+  OnlineSecurity_Yes                         0.0061
+  TotalCharges                               0.0053
+  TechSupport_Yes                            0.0047
+  PaperlessBilling_Yes                       0.0029
+  OnlineBackup_Yes                           0.0023
+[figura] figuras/ej1_resultados.png
+
+[OK] Ejemplo 1 finalizado.

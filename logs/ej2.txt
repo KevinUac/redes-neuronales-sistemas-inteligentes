@@ -1,0 +1,69 @@
+
+========================================================================
+1. CARGA Y ANALISIS EXPLORATORIO
+========================================================================
+Mezclas: 1030 | Variables de entrada: 8 | Variable objetivo: strength (MPa)
+Datos faltantes: 0
+                 min    mean     max
+cement        102.00  281.17   540.0
+slag            0.00   73.90   359.4
+ash             0.00   54.19   200.1
+water         121.80  181.57   247.0
+superplastic    0.00    6.20    32.2
+coarseagg     801.00  972.92  1145.0
+fineagg       594.00  773.58   992.6
+age             1.00   45.66   365.0
+strength        2.33   35.82    82.6
+
+Desarrollo (entrenamiento + validacion cruzada): 875 | Prueba (reservado): 155
+
+========================================================================
+2. AJUSTE DE HIPERPARAMETROS (validacion cruzada de 5 pliegues, criterio: RMSE)
+========================================================================
+Se evaluaron 30 configuraciones x 5 pliegues = 150 entrenamientos (134 s)
+Top 6 configuraciones:
+  capas=(64, 32)  activ=relu  alpha=1.0   RMSE_CV = 4.828 +/- 0.363 MPa
+  capas=(64,)     activ=relu  alpha=1.0   RMSE_CV = 4.984 +/- 0.449 MPa
+  capas=(32,)     activ=relu  alpha=0.1   RMSE_CV = 4.998 +/- 0.271 MPa
+  capas=(32, 16)  activ=relu  alpha=1.0   RMSE_CV = 5.086 +/- 0.404 MPa
+  capas=(16,)     activ=tanh  alpha=0.01  RMSE_CV = 5.194 +/- 0.370 MPa
+  capas=(64, 32)  activ=relu  alpha=0.1   RMSE_CV = 5.230 +/- 0.582 MPa
+Peor configuracion evaluada: RMSE_CV = 7.369 MPa
+
+>> Mejor configuracion: capas=(64, 32), activacion=relu, alpha=1.0
+
+========================================================================
+3. ENTRENAMIENTO FINAL
+========================================================================
+Curva de aprendizaje (Adam, 720 entrenamiento / 155 validacion): minimo de validacion en la epoca 1405 de 1500
+Arquitectura de cada red: 8 -> 64 -> 32 -> 1 (lineal) | oculta: relu
+Parametros entrenables por red: 2689 | redes en el comite: 5
+
+========================================================================
+4. EVALUACION
+========================================================================
+                 Conjunto      R     R2  RMSE (MPa)  MAE (MPa)  MAPE (%)
+  Comite MLP - desarrollo 0.9896 0.9792      2.4225     1.6095    5.6186
+    Una sola red - prueba 0.9586 0.9182      4.6283     3.1997   10.2724
+      Comite MLP - PRUEBA 0.9631 0.9261      4.3984     2.9915    9.6333
+Regresion lineal - prueba 0.8023 0.6436      9.6605     7.7336   30.6736
+
+RMSE en validacion cruzada (5 pliegues, una red): 4.828 +/- 0.363 MPa
+Error en prueba: media = +0.555 MPa | desv. estandar = 4.363 MPa
+El 90 % de las predicciones cae a menos de 6.78 MPa del valor real
+Mejora del RMSE respecto a la regresion lineal: 54.5 %
+
+Importancia de cada variable (aumento del RMSE al permutarla, en MPa):
+  Cemento              +14.57 MPa
+  Escoria              +11.61 MPa
+  Edad (días)          +11.50 MPa
+  Ceniza volante       +5.84 MPa
+  Agregado fino        +4.21 MPa
+  Agua                 +3.75 MPa
+  Agregado grueso      +2.95 MPa
+  Superplastificante   +2.54 MPa
+
+Prediccion de ejemplo -> cemento 350, agua 180, edad 28 d: 39.57 MPa
+[figura] figuras/ej2_resultados.png
+
+[OK] Ejemplo 2 finalizado.
