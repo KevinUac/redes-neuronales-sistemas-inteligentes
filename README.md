@@ -12,6 +12,14 @@ que cada script descarga automáticamente desde GitHub.
 | `ej2_regresion_concreto.py` | Fitting | Resistencia del concreto, MPa (industrial) | UCI Concrete Compressive Strength (1,030) |
 | `ej3_series_tiempo_pm25.py` | Series de tiempo (NARX) | PM2.5 a 6 h + alerta (industrial/ambiental) | UCI Beijing PM2.5 (43,824 horas) |
 
+## Enlaces
+
+- Repositorio: https://github.com/KevinUac/redes-neuronales-sistemas-inteligentes
+- Ejemplo 1 (clasificación), ejecutar en Colab: https://colab.research.google.com/github/KevinUac/redes-neuronales-sistemas-inteligentes/blob/main/RNA_Ejemplo1_Clasificacion.ipynb
+- Ejemplo 2 (regresión), ejecutar en Colab: https://colab.research.google.com/github/KevinUac/redes-neuronales-sistemas-inteligentes/blob/main/RNA_Ejemplo2_Regresion.ipynb
+- Ejemplo 3 (series de tiempo), ejecutar en Colab: https://colab.research.google.com/github/KevinUac/redes-neuronales-sistemas-inteligentes/blob/main/RNA_Ejemplo3_SeriesTiempo.ipynb
+- Los tres en un solo cuaderno: https://colab.research.google.com/github/KevinUac/redes-neuronales-sistemas-inteligentes/blob/main/RNA_Practica_Colab.ipynb
+
 ## Instrucciones de uso
 
 Requisitos: Python 3.9+ y conexión a internet (solo la primera vez, para descargar los datos).
